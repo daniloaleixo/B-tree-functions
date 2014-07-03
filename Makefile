@@ -17,3 +17,6 @@ $(OUT): $(OBJS)
 ep4.o: $(IN)
 	$(CC) $(IN) $(CFLAGS) -c -o ep4.o
 
+StringOps.o: StringOps.c
+	$(CC) StringOps.c $(CFLAGS) -c -o StringOps.o
+
