@@ -14,7 +14,6 @@
 
 #include "StringOps.h"
 
-
 #define TRUE 1
 #define FALSE 0
 
@@ -22,14 +21,18 @@
 typedef struct no
 {
     int chave;
+    int numChaves; /*sempre que houver a fusao ou divisao de um no, esse valor devera ser alterado*/
     struct no *esq,*dir;
 }No;
 
+/*Prototipos das funcoes*/
+No *inserir(No *raiz, int chave);
+void imprime(No *raiz);
 
 
 int main(int argc, char **argv)
 {
-	No *raiz;
+	No *raiz;	
 	int ordemArvore, opcao = 0;
 	int chaveAInserir;
 
@@ -40,8 +43,13 @@ int main(int argc, char **argv)
 		{
 			printf("Digite a ordem da arvore B\n");
 			scanf("%d", &ordemArvore);
-			if(ordemArvore > 0) break;
-			else printf("Valor invalido, por favor digite um valor valido!\n");
+			if(ordemArvore > 0) 
+			{
+				system("clear");
+				break;
+			}
+			else 
+				printf("Valor invalido, por favor digite um valor valido!\n");
 		}
 
 		/* loop principal */
@@ -53,18 +61,19 @@ int main(int argc, char **argv)
 			printf("(3) Remover uma chave\n");
 			printf("(4) Finalizar processo\n");
 			printf("--------------------------------\n");
-			scanf("%d", &opcao);
+			scanf("%d", &opcao);			
 
-			/* caso 4 */
-			if(opcao == 4) break;
-
-			/* caso 2 >>>>BUSCAR */
-			else if(opcao == 2)
+			/* caso 2 >>>>Inserir */
+			if(opcao == 2)
 			{
 				printf("Digite a chave do no que deseja inserir\n");
 				scanf("%d", &chaveAInserir);
-				inserir(raiz, chaveAInserir);
+				raiz = inserir(raiz, chaveAInserir);
+				imprime(raiz);
 			}
+
+			/* caso 4 */
+			else if(opcao == 4) break;
 		}
 		
 
@@ -77,30 +86,46 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-
-void inserir(No *raiz, int chave)
+No *inserir(No *raiz, int chave)
 {
 	No *aux;
 	No *novoElemento = malloc(sizeof(No));
+	novoElemento->chave = chave;
 	novoElemento->esq = NULL;
 	novoElemento->dir = NULL;
 
-	if(raiz == NULL)
+	if(raiz == NULL) /*caso a raiz esteja vazia, basta tornar o novo elemento como raiz*/
 	{
 		raiz = novoElemento;
 	} 
 	else {
 		aux = raiz;
-		while(novoElemento->chave < aux->chave)
+		if(chave < aux->chave)
 		{
-			if(aux->esq == NULL) aux->esq = novoElemento;
-			else aux = aux->esq;
+			if(aux->esq == NULL)
+				aux->esq = novoElemento;
 		}
-		aux = raiz;
-		while(novoElemento->chave > aux->chave)
+		if(chave > aux->chave)
 		{
-			if(aux->dir == NULL) aux->dir = novoElemento;
-			else aux = aux->dir;
+			if(aux->dir == NULL)
+				aux->dir = novoElemento;
 		}
 	}
 }
+
+void imprime(No *raiz)
+{
+	if(raiz != NULL)
+	{
+		printf("Valor da raiz: %d\n", raiz->chave);
+	}
+	if(raiz->esq != NULL)
+	{
+		imprime(raiz->esq);
+	}
+	if(raiz->dir != NULL)
+	{
+		imprime(raiz->dir);
+	}
+}
+
