@@ -1,39 +1,33 @@
-/* **********************************************
-*						*
-*	EP4 - ESTRUTURA DE DADOS 		*
-*						*
-*	Prof. Andre Fujita 			*
-*						*
-*	Danilo Aleixo Gomes de Souza		*
-*	n USP 7972370				*
-*						*
-*	Julio Cesar Seki			*
-*	n USP 7991145 				*
-*						*
-*********************************************** */
-
 #include "StringOps.h"
+
 
 #define TRUE 1
 #define FALSE 0
 
 /* Estrutura da arvore */
-typedef struct no
+typedef struct node 
 {
-    int chave;
-    int numChaves; /*sempre que houver a fusao ou divisao de um no, esse valor devera ser alterado*/
-    struct no *esq,*dir;
-}No;
+	int numChaves;
+	int *chaves;
+	struct node **filhos;
+} Node;
 
-/*Prototipos das funcoes*/
-No *inserir(No *raiz, int chave);
-void imprime(No *raiz);
+
+/* prototipo das funcoes */
+int *inserirVetor(int *vetor, int chave);
+Node *criaNode();
+Node *inserir(Node *raiz, int chave);
+
+
+/* variaveis globais */
+int ordemArvore;
+
 
 
 int main(int argc, char **argv)
 {
-	No *raiz;	
-	int ordemArvore, opcao = 0;
+	Node *raiz = NULL;
+	int opcao = 0;
 	int chaveAInserir;
 
 	if(argc == 1)
@@ -44,10 +38,7 @@ int main(int argc, char **argv)
 			printf("Digite a ordem da arvore B\n");
 			scanf("%d", &ordemArvore);
 			if(ordemArvore > 0) 
-			{
-				system("clear");
 				break;
-			}
 			else 
 				printf("Valor invalido, por favor digite um valor valido!\n");
 		}
@@ -61,19 +52,18 @@ int main(int argc, char **argv)
 			printf("(3) Remover uma chave\n");
 			printf("(4) Finalizar processo\n");
 			printf("--------------------------------\n");
-			scanf("%d", &opcao);			
+			scanf("%d", &opcao);
 
-			/* caso 2 >>>>Inserir */
-			if(opcao == 2)
+			/* caso 4 */
+			if(opcao == 4) break;
+
+			/* caso 2 >>>>BUSCAR */
+			else if(opcao == 2)
 			{
 				printf("Digite a chave do no que deseja inserir\n");
 				scanf("%d", &chaveAInserir);
 				raiz = inserir(raiz, chaveAInserir);
-				imprime(raiz);
 			}
-
-			/* caso 4 */
-			else if(opcao == 4) break;
 		}
 		
 
@@ -86,47 +76,67 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-No *inserir(No *raiz, int chave)
+Node *criaNode ()
 {
-	No *aux;
-	No *novoElemento = malloc(sizeof(No));
-	novoElemento->chave = chave;
-	novoElemento->esq = NULL;
-	novoElemento->dir = NULL;
+	Node *novo = malloc(sizeof(Node));
+	novo->numChaves = 0;
+	novo->chaves = malloc(ordemArvore * sizeof(int));
+	novo->filhos = malloc(ordemArvore * sizeof(Node*));
+}
 
-	if(raiz == NULL) /*caso a raiz esteja vazia, basta tornar o novo elemento como raiz*/
-	{
-		raiz = novoElemento;
-	} 
+Node *recursao(Node *aux, int chave)
+{
+	if(aux->numChaves <= 0)
+		return aux;
 	else {
-		aux = raiz;
-		if(chave < aux->chave)
+		int menor = aux->chaves[0];
+		int maior = aux->chaves[aux->numChaves - 1];
+		if(chave > menor && chave < maior)	
+			return aux;
+		else if(chave < menor){
+			if(aux->numChaves < ordemArvore) return aux;
+			else if(aux->filhos[0] != NULL) recursao(aux->filhos[0]);
+			else return aux;
+		} 
+		else if(chave > maior)
 		{
-			if(aux->esq == NULL)
-				aux->esq = novoElemento;
-		}
-		if(chave > aux->chave)
-		{
-			if(aux->dir == NULL)
-				aux->dir = novoElemento;
+			if(aux->numChaves < ordemArvore) return aux;
+			else if(aux->filhos[aux->numChaves - 1] != NULL) recursao(aux->filhos[ordemArvore - 1]);
+			else return aux;
 		}
 	}
-	return raiz;
 }
 
-void imprime(No *raiz)
+Node *inserir(Node *raiz, int chave)
 {
-	if(raiz != NULL)
+	Node *praInserir;
+	Node *novoElemento = criaNode();
+
+	if(raiz == NULL)
 	{
-		printf("Valor da raiz: %d\n", raiz->chave);
-	}
-	if(raiz->esq != NULL)
-	{
-		imprime(raiz->esq);
-	}
-	if(raiz->dir != NULL)
-	{
-		imprime(raiz->dir);
+		novoElemento->numChaves = 1;
+		novoElemento->chaves[0] = chave;
+		return novoElemento;
+	} else {
+		praInserir = recursao(raiz, chave);
+		if(praInserir->numChaves == ordemArvore)
+		{
+			/* precisa fazer */
+		} else {
+			praInserir->chaves = inserirVetor(praInserir->chaves, chave);
+		}
 	}
 }
 
+int *inserirVetor(int *vetor, int chave)
+{
+	int *novoVetor = malloc(ordemArvore * sizeof(int));
+	int cont =  0, i;
+	for(i = 0; vetor[i] < chave && i < ordemArvore; i++)
+		novoVetor[cont++] = vetor[i];
+	novoVetor[cont++] = chave;
+	for(i = 0; i < ordemArvore; i++)
+		novoVetor[cont++] = vetor[i + 1];
+
+	return novoVetor;
+}
