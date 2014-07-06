@@ -1,3 +1,17 @@
+/* **********************************************
+*						*
+*	EP4 - ESTRUTURA DE DADOS 		*
+*						*
+*	Prof. Andre Fujita 			*
+*						*
+*	Danilo Aleixo Gomes de Souza		*
+*	n USP 7972370				*
+*						*
+*	Julio Cesar Seki			*
+*	n USP 7991145 				*
+*						*
+*********************************************** */
+
 #include "StringOps.h"
 
 
@@ -17,6 +31,7 @@ typedef struct node
 int *inserirVetor(int *vetor, int chave);
 Node *criaNode();
 Node *inserir(Node *raiz, int chave);
+void imprime(Node *raiz);
 
 
 /* variaveis globais */
@@ -139,4 +154,20 @@ int *inserirVetor(int *vetor, int chave)
 		novoVetor[cont++] = vetor[i + 1];
 
 	return novoVetor;
+}
+
+void imprime(Node *raiz)
+{
+	if(raiz != NULL)
+	{
+		printf("Valor da raiz: %d\n", raiz->chave);
+	}
+	if(raiz->esq != NULL)
+	{
+		imprime(raiz->esq);
+	}
+	if(raiz->dir != NULL)
+	{
+		imprime(raiz->dir);
+	}
 }
