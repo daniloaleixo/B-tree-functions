@@ -111,6 +111,7 @@ No *inserir(No *raiz, int chave)
 				aux->dir = novoElemento;
 		}
 	}
+	return raiz;
 }
 
 void imprime(No *raiz)
