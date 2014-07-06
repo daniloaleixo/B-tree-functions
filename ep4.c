@@ -1,3 +1,17 @@
+/* **********************************************
+*						*
+*	EP4 - ESTRUTURA DE DADOS 		*
+*						*
+*	Prof. Andre Fujita 			*
+*						*
+*	Danilo Aleixo Gomes de Souza		*
+*	n USP 7972370				*
+*						*
+*	Julio Cesar Seki			*
+*	n USP 7991145 				*
+*						*
+*********************************************** */
+
 #include "StringOps.h"
 
 
