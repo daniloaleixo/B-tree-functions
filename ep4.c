@@ -79,6 +79,7 @@ int main(int argc, char **argv)
 				scanf("%d", &chaveAInserir);
 				raiz = inserir(raiz, chaveAInserir);
 			}
+			imprime(raiz);
 		}
 		
 
@@ -97,6 +98,7 @@ Node *criaNode ()
 	novo->numChaves = 0;
 	novo->chaves = malloc(ordemArvore * sizeof(int));
 	novo->filhos = malloc(ordemArvore * sizeof(Node*));
+	return novo;
 }
 
 Node *recursao(Node *aux, int chave)
@@ -110,16 +112,17 @@ Node *recursao(Node *aux, int chave)
 			return aux;
 		else if(chave < menor){
 			if(aux->numChaves < ordemArvore) return aux;
-			else if(aux->filhos[0] != NULL) recursao(aux->filhos[0]);
+			else if(aux->filhos[0] != NULL) recursao(aux->filhos[0], chave);
 			else return aux;
 		} 
 		else if(chave > maior)
 		{
 			if(aux->numChaves < ordemArvore) return aux;
-			else if(aux->filhos[aux->numChaves - 1] != NULL) recursao(aux->filhos[ordemArvore - 1]);
+			else if(aux->filhos[aux->numChaves - 1] != NULL) recursao(aux->filhos[ordemArvore - 1], chave);
 			else return aux;
 		}
 	}
+	return NULL;
 }
 
 Node *inserir(Node *raiz, int chave)
@@ -141,6 +144,7 @@ Node *inserir(Node *raiz, int chave)
 			praInserir->chaves = inserirVetor(praInserir->chaves, chave);
 		}
 	}
+	return raiz;
 }
 
 int *inserirVetor(int *vetor, int chave)
@@ -158,16 +162,18 @@ int *inserirVetor(int *vetor, int chave)
 
 void imprime(Node *raiz)
 {
+	int i;
 	if(raiz != NULL)
 	{
-		printf("Valor da raiz: %d\n", raiz->chave);
+		printf("\n\n");
+		printf("Valor da raiz: ");
+		for(i = 0; i < raiz->numChaves; i++)
+			printf("%d ", raiz->chaves[i]);
+		printf("\n" );
 	}
-	if(raiz->esq != NULL)
+	for(i = 0; i < raiz->numChaves; i++)
 	{
-		imprime(raiz->esq);
+		if(raiz->filhos[i] != NULL) imprime(raiz->filhos[i]);
 	}
-	if(raiz->dir != NULL)
-	{
-		imprime(raiz->dir);
-	}
+	printf("\n\n");
 }
